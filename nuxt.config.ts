@@ -23,7 +23,7 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      navigateFallback: '/',
+      navigateFallback: '/imposter-khmer/',
       globPatterns: ['**/*.{js,css,html,svg,ico,woff2}'],
     },
     devOptions: {
@@ -33,6 +33,7 @@ export default defineNuxtConfig({
     },
   },
   app: {
+    baseURL: '/imposter-khmer/',
     head: {
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },

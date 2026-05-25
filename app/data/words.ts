@@ -281,7 +281,7 @@ export const CATEGORIES: Record<'en' | 'km', Category[]> = {
         { word: 'បាយ',        hint: 'អាហារសំខាន់' },
         { word: 'នំបញ្ចុក',   hint: 'ម្ហូបខ្មែរ' },
         { word: 'អាម៉ូក',     hint: 'ម្ហូបខ្មែរ' },
-        { word: ' លូកលាក',    hint: 'ម្ហូបខ្មែរ' },
+        { word: 'លូកលាក',     hint: 'ម្ហូបខ្មែរ' },
         { word: 'ត្រីអាំង',   hint: 'ម្ហូបអាំង' },
         { word: 'ភ្លៅ',       hint: 'ម្ហូបសាច់' },
         { word: 'ស្ងោរ',      hint: 'ម្ហូបទឹក' },

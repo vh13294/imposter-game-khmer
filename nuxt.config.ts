@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   },
   modules: ['@vite-pwa/nuxt'],
   pwa: {
+    registerType: 'autoUpdate',
     manifest: {
       name: 'Imposter Game',
       short_name: 'Imposter',
@@ -25,6 +26,9 @@ export default defineNuxtConfig({
     workbox: {
       navigateFallback: '/imposter-game-khmer/',
       globPatterns: ['**/*.{js,css,html,svg,ico,woff2}'],
+      cleanupOutdatedCaches: true,
+      skipWaiting: true,
+      clientsClaim: true,
     },
     devOptions: {
       enabled: true,

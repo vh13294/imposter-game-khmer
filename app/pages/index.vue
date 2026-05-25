@@ -223,7 +223,7 @@ function handleStart() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 20px 16px;
+  padding: max(20px, env(safe-area-inset-top)) 20px 16px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
   background: rgba(10,10,20,0.95);
   position: sticky;

@@ -885,7 +885,7 @@ function handleChangeSetup() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: max(12px, env(safe-area-inset-top)) 16px 12px;
   background: rgba(10,10,20,0.9);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.06);

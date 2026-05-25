@@ -23,7 +23,7 @@ const holdProgress = ref(0)
 const showWord = ref(false)
 let holdTimer: ReturnType<typeof setInterval> | null = null
 let holdStartTime = 0
-const HOLD_MS = 3000
+const HOLD_MS = 1500
 
 // SVG ring math
 const RADIUS = 48
@@ -34,7 +34,7 @@ const t = computed(() => language.value === 'km' ? {
   passDevice: 'ផ្ទេរទូរស័ព្ទ',
   passInstruction: 'ប្រគល់ទូរស័ព្ទ ហើយចុចប៊ូតុង',
   holdReveal: 'ចុចឱ្យជាប់ដើម្បីមើល',
-  holdHint: 'ចុចឱ្យជាប់ ២ វិនាទី',
+  holdHint: 'ចុចឱ្យជាប់ ១.៥ វិនាទី',
   holdProgress: 'ចុចឱ្យជាប់...',
   citizenRole: 'អ្នកជាពលរដ្ឋ',
   imposterRole: 'អ្នកជា អ្នកក្លែងបន្លំ!',
@@ -71,7 +71,7 @@ const t = computed(() => language.value === 'km' ? {
   passDevice: 'Pass device to',
   passInstruction: 'Hand it over, then press and hold to reveal',
   holdReveal: 'Hold to Reveal',
-  holdHint: 'Hold for 2 seconds',
+  holdHint: 'Hold for 1.5 seconds',
   holdProgress: 'Holding...',
   citizenRole: 'You are a CITIZEN',
   imposterRole: 'You are the IMPOSTER!',

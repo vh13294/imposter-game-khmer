@@ -213,9 +213,9 @@ function handleStart() {
 .page {
   display: flex;
   flex-direction: column;
+  width: 100%;
   min-height: 100dvh;
   max-width: 480px;
-  margin: 0 auto;
 }
 
 /* Header */

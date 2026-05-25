@@ -1,3 +1,15 @@
+<script setup lang="ts">
+const { app } = useRuntimeConfig()
+const base = app.baseURL.replace(/\/$/, '')
+
+useHead({
+  link: [
+    { rel: 'icon', type: 'image/svg+xml', href: `${base}/icon.svg` },
+    { rel: 'apple-touch-icon', href: `${base}/icon.svg` },
+  ],
+})
+</script>
+
 <template>
   <div class="app">
     <NuxtRouteAnnouncer />

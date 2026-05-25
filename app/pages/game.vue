@@ -1,6 +1,17 @@
 <script setup lang="ts">
 const { players, language, round, currentPlayer, isCurrentImposter, imposterPlayer, advancePlayer, resetRound, startGame } = useGame()
 
+// Derived display state based on game mode
+const showAsImposter = computed(() => isCurrentImposter.value && (round.value?.imposterSelfAware ?? false))
+const displayWord = computed(() => {
+  if (!round.value) return ''
+  return isCurrentImposter.value ? round.value.imposterWord : round.value.word
+})
+const wordLabel = computed(() => {
+  if (!round.value || !isCurrentImposter.value || !round.value.imposterSelfAware) return t.value.theWordIs
+  return round.value.gameMode === 'category' ? t.value.imposterCategoryLabel : t.value.imposterHintLabel
+})
+
 // Redirect if no active round
 onMounted(() => {
   if (!round.value) navigateTo('/')
@@ -30,6 +41,11 @@ const t = computed(() => language.value === 'km' ? {
   theWordIs: 'ពាក្យសម្ងាត់',
   citizenHint: 'ចាំ! កុំប្រាប់ពាក្យ',
   imposterHint: 'អ្នកមិនដឹងពាក្យ! ព្យាយាមលាក់ខ្លួន',
+  imposterHintLabel: 'ពាក្យជំនួយ',
+  imposterCategoryLabel: 'ប្រភេទរបស់អ្នក',
+  imposterHintHint: 'អ្នកជាអ្នកក្លែងបន្លំ! ប្រើពាក្យជំនួយ ហើយលាក់ខ្លួន',
+  imposterCategoryHint: 'អ្នកជាអ្នកក្លែងបន្លំ! ប្រើប្រភេទ ព្យាយាមទាយពាក្យ',
+  modeLabel: 'របៀប',
   doneNext: 'ហេីយ → ផ្ទេរឱ្យ',
   doneAll: 'ហេីយ → ចាប់ផ្ដើមជជែក',
   discussTitle: 'ជជែករកអ្នកក្លែងបន្លំ!',
@@ -62,6 +78,11 @@ const t = computed(() => language.value === 'km' ? {
   theWordIs: 'The secret word is',
   citizenHint: "Remember it — don't give it away!",
   imposterHint: "You don't know the word. Blend in!",
+  imposterHintLabel: 'Your hint word',
+  imposterCategoryLabel: 'Your category',
+  imposterHintHint: "You're the imposter! Use this hint to blend in.",
+  imposterCategoryHint: "You're the imposter! Use the category to guess the word.",
+  modeLabel: 'Mode',
   doneNext: 'Done → Pass to',
   doneAll: 'Done → Start Discussion',
   discussTitle: 'Find the Imposter!',
@@ -229,6 +250,7 @@ function handleChangeSetup() {
           <span class="meta-chip">{{ t.category }}: {{ round.categoryName }}</span>
           <span class="meta-chip">{{ t.totalPlayers }}: {{ players.length }}</span>
           <span class="meta-chip red">{{ t.imposterCount }}: 1</span>
+          <span class="meta-chip mode-chip">{{ t.modeLabel }}: {{ round.gameMode === 'hint' ? (language === 'km' ? 'ពាក្យជំនួយ' : 'Hint') : round.gameMode === 'blind' ? (language === 'km' ? 'លាក់ខ្លួន' : 'Undercover') : (language === 'km' ? 'ប្រភេទ' : 'Category') }}</span>
         </div>
       </div>
 
@@ -349,17 +371,20 @@ function handleChangeSetup() {
         <!-- ── REVEALED ── -->
         <div v-else key="revealed" class="phase-view">
           <Transition name="card-pop" appear>
-            <div :class="['role-card', isCurrentImposter ? 'imposter' : 'citizen']">
-              <div class="role-icon">{{ isCurrentImposter ? '😈' : '🟢' }}</div>
-              <div class="role-title">{{ isCurrentImposter ? t.imposterRole : t.citizenRole }}</div>
+            <div :class="['role-card', showAsImposter ? 'imposter' : 'citizen']">
+              <div class="role-icon">{{ showAsImposter ? '😈' : '🟢' }}</div>
+              <div class="role-title">{{ showAsImposter ? t.imposterRole : t.citizenRole }}</div>
 
-              <template v-if="!isCurrentImposter">
-                <div class="word-label">{{ t.theWordIs }}</div>
-                <div class="word-value">{{ round.word }}</div>
-                <div class="role-hint">{{ t.citizenHint }}</div>
+              <div class="word-label">{{ wordLabel }}</div>
+              <div class="word-value">{{ displayWord }}</div>
+
+              <template v-if="showAsImposter">
+                <div class="role-hint imposter-hint">
+                  {{ round.gameMode === 'category' ? t.imposterCategoryHint : t.imposterHintHint }}
+                </div>
               </template>
               <template v-else>
-                <div class="role-hint imposter-hint">{{ t.imposterHint }}</div>
+                <div class="role-hint">{{ t.citizenHint }}</div>
               </template>
             </div>
           </Transition>
@@ -659,6 +684,12 @@ function handleChangeSetup() {
   border-color: rgba(240,80,110,0.3);
   color: #f0506e;
   background: rgba(240,80,110,0.08);
+}
+
+.meta-chip.mode-chip {
+  border-color: rgba(124,109,240,0.3);
+  color: #a99eff;
+  background: rgba(124,109,240,0.08);
 }
 
 .discuss-body {

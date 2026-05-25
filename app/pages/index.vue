@@ -1,7 +1,28 @@
 <script setup lang="ts">
 import { CATEGORIES } from '~/data/words'
 
-const { players, language, categoryId, addPlayer, removePlayer, renamePlayer, startGame } = useGame()
+const { players, language, categoryId, gameMode, addPlayer, removePlayer, renamePlayer, startGame } = useGame()
+
+const GAME_MODES = [
+  {
+    id: 'hint' as const,
+    icon: '🔍',
+    label: { en: 'Hint Word', km: 'ពាក្យជំនួយ' },
+    desc: { en: 'Imposter knows their role, gets a similar word as a hint', km: 'អ្នកក្លែងបន្លំដឹងខ្លួន ទទួលបានពាក្យស្រដៀងជំនួយ' },
+  },
+  {
+    id: 'blind' as const,
+    icon: '🎭',
+    label: { en: 'Undercover', km: 'លាក់ខ្លួន' },
+    desc: { en: 'Imposter doesn\'t knows their role, gets a similar word as a hint', km: 'អ្នកក្លែងបន្លំបានពាក្យស្រដៀង ប៉ុន្តែមិនដឹងខ្លួន' },
+  },
+  {
+    id: 'category' as const,
+    icon: '📂',
+    label: { en: 'Category Only', km: 'ប្រភេទប៉ុណ្ណោះ' },
+    desc: { en: 'Imposter knows their role, only sees the category name', km: 'អ្នកក្លែងបន្លំដឹងខ្លួន ឃើញតែប្រភេទប៉ុណ្ណោះ' },
+  },
+]
 
 const newName = ref('')
 const newNameInput = ref<HTMLInputElement | null>(null)
@@ -14,6 +35,7 @@ const canStart = computed(() => players.value.length >= 3)
 const t = computed(() => language.value === 'km' ? {
   title: 'ហ្គេម អ្នកក្លែងបន្លំ',
   subtitle: 'ស្វែងរកអ្នកក្លែងបន្លំ!',
+  mode: 'របៀបលេង',
   category: 'ជ្រើសប្រភេទ',
   players: 'អ្នកលេង',
   addPlayer: '+ បន្ថែមអ្នកលេង',
@@ -27,6 +49,7 @@ const t = computed(() => language.value === 'km' ? {
 } : {
   title: 'Imposter Game',
   subtitle: 'Find the imposter among you!',
+  mode: 'Game Mode',
   category: 'Choose Category',
   players: 'Players',
   addPlayer: '+ Add Player',
@@ -96,6 +119,26 @@ function handleStart() {
     </header>
 
     <div class="content">
+      <!-- Game Mode Selector -->
+      <section class="section">
+        <h2 class="section-title">{{ t.mode }}</h2>
+        <div class="mode-list">
+          <button
+            v-for="m in GAME_MODES"
+            :key="m.id"
+            :class="['mode-btn', { active: gameMode === m.id }]"
+            @click="gameMode = m.id"
+          >
+            <span class="mode-icon">{{ m.icon }}</span>
+            <div class="mode-text">
+              <span class="mode-label">{{ m.label[language] }}</span>
+              <span class="mode-desc">{{ m.desc[language] }}</span>
+            </div>
+            <span v-if="gameMode === m.id" class="mode-check">✓</span>
+          </button>
+        </div>
+      </section>
+
       <!-- Category Selector -->
       <section class="section">
         <h2 class="section-title">{{ t.category }}</h2>
@@ -491,6 +534,73 @@ function handleStart() {
   font-weight: 700;
   padding: 2px 10px;
   border-radius: 20px;
+}
+
+/* Mode selector */
+.mode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  padding: 12px 14px;
+  text-align: left;
+  transition: all 0.15s;
+  width: 100%;
+}
+
+.mode-btn:active {
+  transform: scale(0.98);
+}
+
+.mode-btn.active {
+  border-color: #7c6df0;
+  background: rgba(124,109,240,0.12);
+}
+
+.mode-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  width: 32px;
+  text-align: center;
+}
+
+.mode-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mode-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e8e4ff;
+}
+
+.mode-btn.active .mode-label {
+  color: #a99eff;
+}
+
+.mode-desc {
+  font-size: 12px;
+  color: #6b6980;
+  line-height: 1.4;
+}
+
+.mode-check {
+  font-size: 14px;
+  font-weight: 800;
+  color: #7c6df0;
+  flex-shrink: 0;
 }
 
 /* Transitions */

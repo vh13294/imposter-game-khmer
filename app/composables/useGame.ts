@@ -1,5 +1,7 @@
 import { CATEGORIES } from '~/data/words'
 
+export type GameMode = 'hint' | 'blind' | 'category'
+
 export interface Player {
   id: string
   name: string
@@ -12,12 +14,16 @@ export interface GameRound {
   playerOrder: string[]
   currentIndex: number
   phase: 'reveal' | 'discussion'
+  imposterWord: string
+  imposterSelfAware: boolean
+  gameMode: GameMode
 }
 
 export function useGame() {
   const players = useState<Player[]>('players', () => [])
   const language = useState<'en' | 'km'>('language', () => 'en')
   const categoryId = useState<string>('categoryId', () => 'animals')
+  const gameMode = useState<GameMode>('gameMode', () => 'hint')
   const round = useState<GameRound | null>('round', () => null)
 
   if (import.meta.client) {
@@ -29,10 +35,13 @@ export function useGame() {
     if (storedLang === 'en' || storedLang === 'km') language.value = storedLang
     const storedCat = localStorage.getItem('ig-cat')
     if (storedCat) categoryId.value = storedCat
+    const storedMode = localStorage.getItem('ig-mode')
+    if (storedMode === 'hint' || storedMode === 'blind' || storedMode === 'category') gameMode.value = storedMode
 
     watch(players, val => localStorage.setItem('ig-players', JSON.stringify(val)), { deep: true })
     watch(language, val => localStorage.setItem('ig-lang', val))
     watch(categoryId, val => localStorage.setItem('ig-cat', val))
+    watch(gameMode, val => localStorage.setItem('ig-mode', val))
   }
 
   function addPlayer(name: string) {
@@ -56,9 +65,28 @@ export function useGame() {
     const cats = CATEGORIES[language.value]
     const cat = cats.find(c => c.id === categoryId.value) ?? cats[0]!
     const wordList = cat.words
-    const word = wordList[Math.floor(Math.random() * wordList.length)]!
+    const wordIndex = Math.floor(Math.random() * wordList.length)
+    const word = wordList[wordIndex]!
+
+    const otherWords = wordList.filter((_, i) => i !== wordIndex)
+    const similarWord = otherWords[Math.floor(Math.random() * otherWords.length)]!
+
     const shuffled = [...players.value.map(p => p.id)].sort(() => Math.random() - 0.5)
     const imposterId = shuffled[Math.floor(Math.random() * shuffled.length)]!
+
+    let imposterWord: string
+    let imposterSelfAware: boolean
+
+    if (gameMode.value === 'category') {
+      imposterWord = cat.name
+      imposterSelfAware = true
+    } else if (gameMode.value === 'blind') {
+      imposterWord = similarWord
+      imposterSelfAware = false
+    } else {
+      imposterWord = similarWord
+      imposterSelfAware = true
+    }
 
     round.value = {
       word,
@@ -67,6 +95,9 @@ export function useGame() {
       playerOrder: shuffled,
       currentIndex: 0,
       phase: 'reveal',
+      imposterWord,
+      imposterSelfAware,
+      gameMode: gameMode.value,
     }
   }
 
@@ -104,6 +135,7 @@ export function useGame() {
     players,
     language,
     categoryId,
+    gameMode,
     round,
     currentPlayer,
     isCurrentImposter,

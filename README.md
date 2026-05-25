@@ -1,75 +1,26 @@
-# Nuxt Minimal Starter
+# Imposter Game Khmer
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A social deduction party game for groups of friends — available in English and Khmer.
 
-## Setup
+**Play now:** https://vh13294.github.io/imposter-game-khmer/
 
-Make sure to install dependencies:
+## How to Play
 
-```bash
-# npm
-npm install
+Add 3 or more players. One player is secretly the imposter. Everyone receives a secret word — the imposter gets a different word (or just a hint). Players take turns giving clues about their word without revealing it directly.
 
-# pnpm
-pnpm install
+At the end, the group votes on who they think the imposter is.
 
-# yarn
-yarn install
+- The **group** wins by correctly identifying the imposter
+- The **imposter** wins by blending in and avoiding the vote
 
-# bun
-bun install
-```
+## Game Modes
 
-## Development Server
+| Mode | Description |
+|------|-------------|
+| Hint Word | Imposter knows their role and receives a similar word as a hint |
+| Undercover | Imposter receives a similar word but doesn't know they're the imposter |
+| Category Only | Imposter knows their role but only sees the category name, not a word |
 
-Start the development server on `http://localhost:3000`:
+## Languages
 
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Supports **English** and **Khmer** (ភាសាខ្មែរ).

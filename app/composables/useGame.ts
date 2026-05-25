@@ -66,10 +66,11 @@ export function useGame() {
     const cat = cats.find(c => c.id === categoryId.value) ?? cats[0]!
     const wordList = cat.words
     const wordIndex = Math.floor(Math.random() * wordList.length)
-    const word = wordList[wordIndex]!
+    const wordEntry = wordList[wordIndex]!
+    const word = wordEntry.word
 
-    const otherWords = wordList.filter((_, i) => i !== wordIndex)
-    const similarWord = otherWords[Math.floor(Math.random() * otherWords.length)]!
+    const otherEntries = wordList.filter((_, i) => i !== wordIndex)
+    const similarWord = otherEntries[Math.floor(Math.random() * otherEntries.length)]!.word
 
     const shuffled = [...players.value.map(p => p.id)].sort(() => Math.random() - 0.5)
     const imposterId = shuffled[Math.floor(Math.random() * shuffled.length)]!
@@ -78,7 +79,7 @@ export function useGame() {
     let imposterSelfAware: boolean
 
     if (gameMode.value === 'category') {
-      imposterWord = cat.name
+      imposterWord = wordEntry.hint
       imposterSelfAware = true
     } else if (gameMode.value === 'blind') {
       imposterWord = similarWord

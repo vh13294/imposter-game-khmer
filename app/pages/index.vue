@@ -394,7 +394,7 @@ function handleStart() {
   border: 1px solid #7c6df0;
   border-radius: 8px;
   color: #e8e4ff;
-  font-size: 15px;
+  font-size: 16px;
   padding: 6px 10px;
   outline: none;
 }
@@ -448,7 +448,7 @@ function handleStart() {
   border: 1.5px solid rgba(255,255,255,0.1);
   border-radius: 12px;
   color: #e8e4ff;
-  font-size: 15px;
+  font-size: 16px;
   padding: 12px 14px;
   outline: none;
   transition: border-color 0.15s;

@@ -18,8 +18,8 @@ onMounted(() => {
   if (!round.value) navigateTo('/')
 })
 
-// Internal phase: 'passing' | 'holding' | 'revealed'
-const innerPhase = ref<'passing' | 'holding' | 'revealed'>('passing')
+// Internal phase: 'passing' | 'holding' | 'revealed' | 'handover'
+const innerPhase = ref<'passing' | 'holding' | 'revealed' | 'handover'>('passing')
 const holdProgress = ref(0)
 const showWord = ref(false)
 let holdTimer: ReturnType<typeof setInterval> | null = null
@@ -48,7 +48,11 @@ const t = computed(() => language.value === 'km' ? {
   imposterCategoryHint: 'អ្នកជាអ្នកក្លែងបន្លំ! ប្រើប្រភេទ ព្យាយាមទាយពាក្យ',
   modeLabel: 'របៀប',
   doneNext: 'ហេីយ → ផ្ទេរឱ្យ',
-  doneAll: 'ហេីយ → ចាប់ផ្ដើមជជែក',
+  doneAll: 'ហេីយ → បន្ដ',
+  handoverTitle: 'ទាំងអស់គ្នាបានមើលរួចហើយ!',
+  handoverPassTo: 'ប្រគល់ទូរស័ព្ទ',
+  handoverInstruction: 'ហើយចាប់ផ្ដើម, បន្ទាប់មកទៅតាមទ្រនិចនាឡិកា',
+  handoverStart: 'ចាប់ផ្ដើម',
   discussTitle: 'ជជែករកអ្នកក្លែងបន្លំ!',
   category: 'ប្រភេទ',
   totalPlayers: 'អ្នកលេង',
@@ -85,7 +89,11 @@ const t = computed(() => language.value === 'km' ? {
   imposterCategoryHint: "You're the imposter! Use the category to guess the word.",
   modeLabel: 'Mode',
   doneNext: 'Done → Pass to',
-  doneAll: 'Done → Start Discussion',
+  doneAll: 'Done → Continue',
+  handoverTitle: 'All roles revealed!',
+  handoverPassTo: 'Pass device to',
+  handoverInstruction: 'They go first, then continue clockwise',
+  handoverStart: 'Start',
   discussTitle: 'Find the Imposter!',
   category: 'Category',
   totalPlayers: 'Players',
@@ -113,6 +121,12 @@ const nextPlayerName = computed(() => {
   if (nextIdx >= round.value.playerOrder.length) return ''
   const nextId = round.value.playerOrder[nextIdx]
   return players.value.find(p => p.id === nextId)?.name ?? ''
+})
+
+const firstPlayerName = computed(() => {
+  if (!round.value) return ''
+  const firstId = round.value.playerOrder[0]
+  return players.value.find(p => p.id === firstId)?.name ?? ''
 })
 
 const isLastPlayer = computed(() => {
@@ -164,8 +178,17 @@ function revealRole() {
 
 function handleNext() {
   showWord.value = false
-  innerPhase.value = 'passing'
   holdProgress.value = 0
+  if (isLastPlayer.value) {
+    innerPhase.value = 'handover'
+  } else {
+    innerPhase.value = 'passing'
+    advancePlayer()
+  }
+}
+
+function handleStartDiscussion() {
+  innerPhase.value = 'passing'
   advancePlayer()
 }
 
@@ -372,8 +395,20 @@ function handleChangeSetup() {
           </button>
         </div>
 
+        <!-- ── HANDOVER (pass to first speaker after all roles seen) ── -->
+        <div v-else-if="innerPhase === 'handover'" key="handover" class="phase-view">
+          <div class="pass-icon">🎲</div>
+          <p class="handover-subtitle">{{ t.handoverTitle }}</p>
+          <p class="pass-to">{{ t.handoverPassTo }}</p>
+          <h2 class="pass-name">{{ firstPlayerName }}</h2>
+          <p class="pass-hint">{{ t.handoverInstruction }}</p>
+          <button class="handover-btn" @click="handleStartDiscussion">
+            {{ t.handoverStart }}
+          </button>
+        </div>
+
         <!-- ── REVEALED ── -->
-        <div v-else key="revealed" class="phase-view">
+        <div v-else-if="innerPhase === 'revealed'" key="revealed" class="phase-view">
           <Transition name="card-pop" appear>
             <div :class="['role-card', showAsImposter ? 'imposter' : 'citizen']">
               <div class="role-icon">{{ showAsImposter ? '😈' : '🟢' }}</div>
@@ -641,6 +676,31 @@ function handleChangeSetup() {
 .next-btn:active {
   transform: scale(0.97);
   background: rgba(255,255,255,0.1);
+}
+
+.handover-btn {
+  margin-top: 24px;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, rgba(124,109,240,0.3), rgba(124,109,240,0.15));
+  border: 1.5px solid rgba(124,109,240,0.5);
+  border-radius: 16px;
+  color: #e8e4ff;
+  font-size: 16px;
+  font-weight: 800;
+  transition: all 0.15s;
+  letter-spacing: 0.01em;
+}
+
+.handover-btn:active {
+  transform: scale(0.97);
+  background: rgba(124,109,240,0.4);
+}
+
+.handover-subtitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #a99eff;
+  margin-bottom: 8px;
 }
 
 /* ─── Discussion phase ─── */

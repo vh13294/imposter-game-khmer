@@ -2,6 +2,7 @@
 import { CATEGORIES } from '~/data/words'
 
 const { players, language, categoryId, gameMode, addPlayer, removePlayer, renamePlayer, startGame } = useGame()
+const { isInstallable, installApp } = usePwaInstall()
 
 const GAME_MODES = [
   {
@@ -112,9 +113,14 @@ function handleStart() {
           <p class="subtitle">{{ t.subtitle }}</p>
         </div>
       </div>
-      <div class="lang-toggle">
-        <button :class="['lang-btn', { active: language === 'en' }]" @click="language = 'en'">EN</button>
-        <button :class="['lang-btn', { active: language === 'km' }]" @click="language = 'km'">ខ្មែរ</button>
+      <div class="header-actions">
+        <button v-if="isInstallable" class="install-btn" @click="installApp" :title="language === 'km' ? 'ដំឡើងកម្មវិធី' : 'Install app'">
+          ⬇
+        </button>
+        <div class="lang-toggle">
+          <button :class="['lang-btn', { active: language === 'en' }]" @click="language = 'en'">EN</button>
+          <button :class="['lang-btn', { active: language === 'km' }]" @click="language = 'km'">ខ្មែរ</button>
+        </div>
       </div>
     </header>
 
@@ -262,6 +268,30 @@ function handleStart() {
   font-size: 12px;
   color: #6b6980;
   margin-top: 2px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.install-btn {
+  border: none;
+  background: rgba(124,109,240,0.15);
+  color: #7c6df0;
+  font-size: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.install-btn:active {
+  background: rgba(124,109,240,0.3);
 }
 
 .lang-toggle {

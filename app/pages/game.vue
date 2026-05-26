@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { players, language, round, currentPlayer, isCurrentImposter, imposterPlayer, advancePlayer, resetRound, startGame } = useGame()
+const { isInstallable, installApp } = usePwaInstall()
 
 // Derived display state based on game mode
 const showAsImposter = computed(() => isCurrentImposter.value && (round.value?.imposterSelfAware ?? false))
@@ -226,7 +227,10 @@ function handleChangeSetup() {
     <!-- ─── PERSISTENT TOP BAR ─── -->
     <div class="game-topbar">
       <span class="topbar-logo">🕵️ Imposter</span>
-      <button class="topbar-reset-btn" @click="openResetSheet">{{ t.resetBtn }}</button>
+      <div class="topbar-actions">
+        <button v-if="isInstallable" class="topbar-install-btn" @click="installApp" title="Install app">⬇</button>
+        <button class="topbar-reset-btn" @click="openResetSheet">{{ t.resetBtn }}</button>
+      </div>
     </div>
 
     <!-- ─── RESET BOTTOM SHEET ─── -->
@@ -899,6 +903,31 @@ function handleChangeSetup() {
   font-weight: 700;
   color: #6b6980;
   letter-spacing: 0.02em;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar-install-btn {
+  border: 1.5px solid rgba(124,109,240,0.3);
+  background: rgba(124,109,240,0.1);
+  color: #7c6df0;
+  font-size: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.topbar-install-btn:active {
+  background: rgba(124,109,240,0.25);
+  transform: scale(0.96);
 }
 
 .topbar-reset-btn {

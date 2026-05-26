@@ -216,6 +216,14 @@ function handleStart() {
   width: 100%;
   min-height: 100dvh;
   max-width: 480px;
+  margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+  .page {
+    max-width: none;
+    margin: 0;
+  }
 }
 
 /* Header */

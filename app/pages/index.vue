@@ -6,6 +6,12 @@ const { isInstallable, installApp } = usePwaInstall()
 
 const GAME_MODES = [
   {
+    id: 'category' as const,
+    icon: '📂',
+    label: { en: 'Category Only', km: 'ប្រភេទប៉ុណ្ណោះ' },
+    desc: { en: 'Imposter knows their role, only sees the category name', km: 'អ្នកក្លែងបន្លំដឹងខ្លួន ឃើញតែប្រភេទប៉ុណ្ណោះ' },
+  },
+  {
     id: 'hint' as const,
     icon: '🔍',
     label: { en: 'Hint Word', km: 'ពាក្យជំនួយ' },
@@ -16,12 +22,6 @@ const GAME_MODES = [
     icon: '🎭',
     label: { en: 'Undercover', km: 'លាក់ខ្លួន' },
     desc: { en: 'Imposter doesn\'t knows their role, gets a similar word as a hint', km: 'អ្នកក្លែងបន្លំបានពាក្យស្រដៀង ប៉ុន្តែមិនដឹងខ្លួន' },
-  },
-  {
-    id: 'category' as const,
-    icon: '📂',
-    label: { en: 'Category Only', km: 'ប្រភេទប៉ុណ្ណោះ' },
-    desc: { en: 'Imposter knows their role, only sees the category name', km: 'អ្នកក្លែងបន្លំដឹងខ្លួន ឃើញតែប្រភេទប៉ុណ្ណោះ' },
   },
 ]
 

@@ -23,7 +23,7 @@ export function useGame() {
   const players = useState<Player[]>('players', () => [])
   const language = useState<'en' | 'km'>('language', () => 'en')
   const categoryId = useState<string>('categoryId', () => 'animals')
-  const gameMode = useState<GameMode>('gameMode', () => 'hint')
+  const gameMode = useState<GameMode>('gameMode', () => 'category')
   const round = useState<GameRound | null>('round', () => null)
 
   if (import.meta.client) {
